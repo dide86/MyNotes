@@ -1,16 +1,12 @@
 package ru.geekbrains.mynotes.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import ru.geekbrains.mynotes.R;
+public interface NotesRepository {
 
-public class NotesRepository {
+    List<Note> getNotes();
 
-    public List<Note> getNotes() {
-        ArrayList<Note> notes = new ArrayList<>();
-        notes.add(new Note("Новая заметка","Текст заметки ", R.drawable.plus));
+    Note addNote();
 
-        return notes;
-    }
+    void removeAtPosition(int longClickedPosition);
 }

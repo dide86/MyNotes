@@ -1,7 +1,12 @@
 <resources>
-    <string name="app_name">My Notes</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="action_settings">Settings</string>
+    <string name="app_name">RecyclerView</string>
+    <string name="notes_title">Заметки</string>
+    <string name="action_add">Добавить</string>
+    <string name="action_open">Открыть</string>
+    <string name="action_update">Обновить</string>
+    <string name="action_delete">Удалить</string>
+    <string name="notes_edit">Редактирование заметки</string>
+    <string name="hint_note_title">Название заметки</string>
     <string name="button_name">Сохранить</string>
+    <string name="action_settings">Настройки</string>
 </resources>

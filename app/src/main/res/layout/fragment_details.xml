@@ -10,7 +10,7 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin16"
+        android:layout_margin="@dimen/margin"
         android:gravity="center"
         tools:text="Название заметки" />
 
@@ -19,7 +19,7 @@
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin16"
+        android:layout_margin="@dimen/margin"
         android:layout_gravity="center"
         tools:text="Текст заметки" />
 

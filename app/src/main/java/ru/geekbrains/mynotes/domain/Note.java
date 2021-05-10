@@ -3,26 +3,27 @@ package ru.geekbrains.mynotes.domain;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.DrawableRes;
+import java.util.Objects;
 
 public class Note implements Parcelable {
 
-    private final String title;
-    private final String content;
-    @DrawableRes
-    private final int drawbleRes;
+    private String id;
+
+    private String title;
+
+    private String noteText;
 
 
-    public Note(String title, String content, int drawbleRes) {
+
+    public Note(String id, String title, String noteText) {
+        this.id = id;
         this.title = title;
-        this.content = content;
-        this.drawbleRes = drawbleRes;
+        this.noteText = noteText;
     }
 
     protected Note(Parcel in) {
-        title = in.readString();
-        content = in.readString();
-        drawbleRes = in.readInt();
+        id = in.readString();
+
     }
 
     public static final Creator<Note> CREATOR = new Creator<Note>() {
@@ -37,16 +38,32 @@ public class Note implements Parcelable {
         }
     };
 
+    public String getId() {
+        return id;
+    }
+
     public String getTitle() {
         return title;
     }
 
-    public String getContent() {
-        return content;
+    public String getNoteText() {
+        return noteText;
     }
 
-    public int getDrawbleRes() {
-        return drawbleRes;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Note note = (Note) o;
+        return Objects.equals(id, note.id) &&
+                Objects.equals(title, note.title)
+                &&
+                Objects.equals(noteText, note.noteText);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, noteText);
     }
 
     @Override
@@ -56,8 +73,8 @@ public class Note implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
         dest.writeString(title);
-        dest.writeString(content);
-        dest.writeInt(drawbleRes);
+        dest.writeString(noteText);
     }
 }
