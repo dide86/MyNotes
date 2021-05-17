@@ -18,7 +18,9 @@ import ru.geekbrains.mynotes.domain.Note;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHolder> {
 
-    private final ArrayList<Note> data = new ArrayList<>();
+    private static final int NOTE = 0;
+    private static final int HEADER = 1;
+    private final ArrayList<AdapterItem> data = new ArrayList<AdapterItem>();
     private final Fragment fragment;
     private OnNoteClicked clickListener;
     private int longClickedPosition = -1;
@@ -27,7 +29,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         this.fragment = fragment;
     }
 
-    public void setData(List<Note> toAdd) {
+    public void setData(List<AdapterItem> toAdd) {
 
         NotesDiffUtilCallback callback = new NotesDiffUtilCallback(data, toAdd);
 
@@ -39,6 +41,19 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         result.dispatchUpdatesTo(this);
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (data.get(position) instanceof HeaderItem) {
+            return HEADER;
+        }
+
+        if (data.get(position) instanceof NoteItem) {
+            return NOTE;
+        }
+
+        return super.getItemViewType(position);
+    }
+
     @NonNull
     @Override
     public NotesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -48,10 +63,30 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 
     @Override
     public void onBindViewHolder(@NonNull NotesViewHolder holder, int position) {
-        Note note = data.get(position);
 
-        holder.title.setText(note.getTitle());
+        AdapterItem item = (AdapterItem) data.get(position);
 
+        if (holder instanceof NotesViewHolder) {
+
+            NotesViewHolder holder1 = (NotesViewHolder) holder;
+            Note note = ((NoteItem) item).getNote();
+
+            holder1.title.setText(note.getTitle());
+
+//            Glide.with(holder1.image)
+//                    .load(note.getImageUrl())
+//                    .centerCrop()
+//                    .into(holder1.image);
+
+        }
+//
+//        if (holder instanceof HeaderViewHolder) {
+//
+//            HeaderViewHolder holder1 = (HeaderViewHolder) holder;
+//            String title = ((HeaderItem) item).getTitle();
+//
+//            holder1.title.setText(title);
+//        }
     }
 
     @Override
@@ -67,12 +102,19 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         this.clickListener = clickListener;
     }
 
+    public int getSpanSize(int position) {
+        if (data.get(position) instanceof HeaderItem) {
+            return 2;
+        }
+        return 1;
+    }
+
     public int getLongClickedPosition() {
         return longClickedPosition;
     }
 
     public Note getItemAt(int longClickedPosition) {
-        return data.get(longClickedPosition);
+        return ((NoteItem) data.get(longClickedPosition)).getNote();
     }
 
     interface OnNoteClicked {
@@ -81,10 +123,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 
     public static class NotesDiffUtilCallback extends DiffUtil.Callback {
 
-        private final List<Note> oldList;
-        private final List<Note> newList;
+        private final List<AdapterItem> oldList;
+        private final List<AdapterItem> newList;
 
-        public NotesDiffUtilCallback(List<Note> oldList, List<Note> newList) {
+        public NotesDiffUtilCallback(ArrayList<AdapterItem> oldList, List<AdapterItem> newList) {
             this.oldList = oldList;
             this.newList = newList;
         }
@@ -101,7 +143,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 
         @Override
         public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-            return oldList.get(oldItemPosition).getId().equals(newList.get(newItemPosition).getId());
+            return oldList.get(oldItemPosition).getUniqueTag().equals(newList.get(newItemPosition).getUniqueTag());
         }
 
         @Override
@@ -110,6 +152,17 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         }
     }
 
+
+    class HeaderViewHolder extends RecyclerView.ViewHolder {
+
+        TextView title;
+
+        public HeaderViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            title = itemView.findViewById(R.id.title);
+        }
+    }
     class NotesViewHolder extends RecyclerView.ViewHolder {
 
         TextView title;
@@ -124,7 +177,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
                 @Override
                 public void onClick(View v) {
                     if (getClickListener() != null) {
-                        getClickListener().onNoteClicked(data.get(getAdapterPosition()));
+                        getClickListener().onNoteClicked(((NoteItem) data.get(getAdapterPosition())).getNote());
                     }
                 }
             });

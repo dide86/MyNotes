@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,9 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -25,6 +24,7 @@ import ru.geekbrains.mynotes.R;
 import ru.geekbrains.mynotes.domain.Note;
 import ru.geekbrains.mynotes.router.AppRouter;
 import ru.geekbrains.mynotes.router.RouterHolder;
+
 
 public class NotesFragment extends Fragment {
 
@@ -67,7 +67,7 @@ public class NotesFragment extends Fragment {
         adapter.setClickListener(new NotesAdapter.OnNoteClicked() {
             @Override
             public void onNoteClicked(Note note) {
-
+                Toast.makeText(requireContext(), note.getTitle(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -75,28 +75,53 @@ public class NotesFragment extends Fragment {
             viewModel.requestNotes();
         }
 
-        viewModel.getNotesLiveData().observe(getViewLifecycleOwner(), new Observer<List<Note>>() {
+        viewModel.getNotesLiveData().observe(getViewLifecycleOwner(), new Observer<List<AdapterItem>>() {
             @Override
-            public void onChanged(List<Note> notes) {
+            public void onChanged(List<AdapterItem> notes) {
                 adapter.setData(notes);
             }
         });
 
         RecyclerView notesList = view.findViewById(R.id.notes_list);
 
+//        viewModel.getNoteAddedLiveData().observe(getViewLifecycleOwner(), new Observer<Note>() {
+//            @Override
+//            public void onChanged(Note note) {
+//                int position = adapter.addData(note);
+//                notesList.smoothScrollToPosition(position);
+//            }
+//        });
 
-        RecyclerView.LayoutManager lm = new GridLayoutManager(requireContext(), 2);//new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
+//        viewModel.getNoteDeletedLiveData().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+//            @Override
+//            public void onChanged(Integer position) {
+//                adapter.delete(position);
+//            }
+//        });
+
+        // RecyclerView.LayoutManager lm = /*new GridLayoutManager(this, 2);*/new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
+
+        GridLayoutManager lm = new GridLayoutManager(requireContext(), 2);
+
+        lm.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                return adapter.getSpanSize(position);
+            }
+        });
 
         notesList.setLayoutManager(lm);
 
         notesList.setAdapter(adapter);
 
-        DividerItemDecoration itemDecoration = new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL);
-
-        notesList.addItemDecoration(itemDecoration);
+//        DividerItemDecoration itemDecoration = new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL);
+//        itemDecoration.setDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.items_separator));
+//
+//        notesList.addItemDecoration(itemDecoration);
 
         DefaultItemAnimator itemAnimator = new DefaultItemAnimator();
-
+//        itemAnimator.setRemoveDuration(5000L);
+//        itemAnimator.setAddDuration(5000L);
         notesList.setItemAnimator(itemAnimator);
     }
 
@@ -111,7 +136,7 @@ public class NotesFragment extends Fragment {
     public boolean onContextItemSelected(@NonNull MenuItem item) {
 
         if (item.getItemId() == R.id.action_open) {
-
+            Toast.makeText(requireContext(), "Open", Toast.LENGTH_SHORT).show();
 
             return true;
         }
@@ -119,7 +144,7 @@ public class NotesFragment extends Fragment {
         if (item.getItemId() == R.id.action_update) {
 
             if (getActivity() instanceof RouterHolder) {
-                AppRouter router = ((RouterHolder) getActivity()).getRouter();
+                AppRouter router = ((RouterHolder)getActivity()).getRouter();
 
                 router.editNote(adapter.getItemAt(adapter.getLongClickedPosition()));
             }
@@ -128,7 +153,7 @@ public class NotesFragment extends Fragment {
         }
 
         if (item.getItemId() == R.id.action_delete) {
-            viewModel.deleteClicked(adapter.getLongClickedPosition());
+            viewModel.deleteClicked(adapter.getItemAt(adapter.getLongClickedPosition()));
             return true;
         }
 

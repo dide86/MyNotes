@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RecyclerView</string>
+    <string name="app_name">MyNotes</string>
     <string name="notes_title">Заметки</string>
     <string name="action_add">Добавить</string>
     <string name="action_open">Открыть</string>

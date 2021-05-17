@@ -4,9 +4,9 @@ import java.util.List;
 
 public interface NotesRepository {
 
-    List<Note> getNotes();
+    void getNotes(Callback<List<Note>> callback);
 
-    Note addNote();
+    void addNote(String title, String text, Callback<Note> callback);
 
-    void removeAtPosition(int longClickedPosition);
+    void remove(Note item, Callback<Object> callback);
 }

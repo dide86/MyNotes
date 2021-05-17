@@ -3,28 +3,11 @@ package ru.geekbrains.mynotes.domain;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Date;
 import java.util.Objects;
 
+
 public class Note implements Parcelable {
-
-    private String id;
-
-    private String title;
-
-    private String noteText;
-
-
-
-    public Note(String id, String title, String noteText) {
-        this.id = id;
-        this.title = title;
-        this.noteText = noteText;
-    }
-
-    protected Note(Parcel in) {
-        id = in.readString();
-
-    }
 
     public static final Creator<Note> CREATOR = new Creator<Note>() {
         @Override
@@ -37,6 +20,30 @@ public class Note implements Parcelable {
             return new Note[size];
         }
     };
+    private String id;
+    private String title;
+    private String noteText;
+    private Date createDate;
+
+    public Note(String id, String title, String noteText, Date createDate) {
+        this.id = id;
+        this.title = title;
+        this.noteText = noteText;
+        this.createDate = createDate;
+    }
+
+    protected Note(Parcel in) {
+        id = in.readString();
+        title = in.readString();
+        noteText = in.readString();
+        createDate = (Date) in.readSerializable();
+
+    }
+
+
+    public Date getCreatedAt() {
+        return createDate;
+    }
 
     public String getId() {
         return id;
@@ -50,6 +57,7 @@ public class Note implements Parcelable {
         return noteText;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -58,12 +66,13 @@ public class Note implements Parcelable {
         return Objects.equals(id, note.id) &&
                 Objects.equals(title, note.title)
                 &&
-                Objects.equals(noteText, note.noteText);
+                Objects.equals(noteText, note.noteText) &&
+                Objects.equals(createDate, note.createDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, noteText);
+        return Objects.hash(id, title, noteText, createDate);
     }
 
     @Override
@@ -76,5 +85,6 @@ public class Note implements Parcelable {
         dest.writeString(id);
         dest.writeString(title);
         dest.writeString(noteText);
+        dest.writeSerializable(createDate);
     }
 }

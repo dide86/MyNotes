@@ -6,12 +6,8 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import java.util.List;
-
-import ru.geekbrains.mynotes.domain.Note;
 import ru.geekbrains.mynotes.ui.list.NotesListViewModel;
 
 public class ViewModelTestFragment extends Fragment {
@@ -22,11 +18,11 @@ public class ViewModelTestFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         NotesListViewModel viewModel = new ViewModelProvider(requireActivity()).get(NotesListViewModel.class);
-        viewModel.getNotesLiveData().observe(getViewLifecycleOwner(), new Observer<List<Note>>() {
-            @Override
-            public void onChanged(List<Note> notes) {
-
-            }
-        });
+//        viewModel.getNotesLiveData().observe(getViewLifecycleOwner(), new Observer<List<Note>>() {
+//            @Override
+//            public void onChanged(List<Note> notes) {
+//
+//            }
+//        });
     }
 }

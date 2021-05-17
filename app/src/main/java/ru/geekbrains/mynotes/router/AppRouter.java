@@ -3,6 +3,7 @@ package ru.geekbrains.mynotes.router;
 import androidx.fragment.app.FragmentManager;
 
 import ru.geekbrains.mynotes.R;
+import ru.geekbrains.mynotes.ui.auth.AuthFragment;
 import ru.geekbrains.mynotes.domain.Note;
 import ru.geekbrains.mynotes.ui.edit.EditNoteFragment;
 import ru.geekbrains.mynotes.ui.list.NotesFragment;
@@ -21,6 +22,13 @@ public class AppRouter {
                 .commit();
     }
 
+    public void showAuth() {
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, new AuthFragment())
+                .commit();
+    }
+
+
     public void editNote(Note note) {
         fragmentManager.beginTransaction()
                 .replace(R.id.container, EditNoteFragment.newInstance(note))
@@ -28,3 +36,4 @@ public class AppRouter {
                 .commit();
     }
 }
+
